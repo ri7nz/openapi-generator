@@ -1,0 +1,6 @@
+generatorName: reasonml
+outputDir: samples/client/petstore/reasonml
+inputSpec: modules/openapi-generator/src/test/resources/3_0/petstore.yaml
+templateDir: modules/openapi-generator/src/main/resources/reasonml-client
+additionalProperties:
+  hideGenerationTimestamp: "true"
