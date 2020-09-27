@@ -13,36 +13,55 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.apache.commons.lang3.StringUtils.capitalize;
 
-public class ReasonMLClientCodegen extends DefaultCodegen implements CodegenConfig {
-    public static final String PROJECT_NAME = "projectName";
+public class ReasonMLClientCodegen extends DefaultCodegen {
+  public static final String PROJECT_NAME = "projectName";
 
-    // <project>/src/generated
-    protected String sourceFolder = "src";
+  static Logger LOGGER = LoggerFactory.getLogger(ReasonMLClientCodegen.class);
 
-    static Logger LOGGER = LoggerFactory.getLogger(ReasonMLClientCodegen.class);
+  public CodegenType getTag() {
+    return CodegenType.CLIENT;
+  }
 
-    public CodegenType getTag() {
-        return CodegenType.CLIENT;
-    }
+  public String getName() {
+    return "reasonml";
+  }
 
-    public String getName() {
-        return "reasonml";
-    }
+  public String getHelp() {
+    return "Generates a ReasonML client library (beta).";
+  }
 
-    public String getHelp() {
-        return "Generates a ReasonML client library (beta).";
-    }
+  public ReasonMLClientCodegen() {
+    super();
 
-    public ReasonMLClientCodegen() {
-        super();
+    outputFolder = "generated-code" + File.separator + "reasonml";
+    modelTemplateFiles.put("model.mustache", ".re");
+    apiTemplateFiles.put("api.mustache", ".re");
+    embeddedTemplateDir = templateDir = "reasonml-client";
+    apiPackage = File.separator + "src/apis";
+    modelPackage = File.separator + "src/models";
+    supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
+    /**
+     * supportingFiles for Api and Model Model.re - module Category =
+     * Model__Category; - module Tag = Model__Tag;
+     *
+     * Api.re - module Response = Api__Response;
+     */
+    supportingFiles.add(new SupportingFile("models.mustache", "", "src/models/Model.re"));
+    supportingFiles.add(new SupportingFile("apis.mustache", "", "src/apis/Api.re"));
+  }
 
-        outputFolder = "generated-code" + File.separator + "reasonml";
-        modelTemplateFiles.put("model.mustache", ".re");
-        apiTemplateFiles.put("api.mustache", ".re");
-        embeddedTemplateDir = templateDir = "reasonml-client";
-        apiPackage = File.separator + "Apis";
-        modelPackage = File.separator + "Models";
-        supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
-    }
+  @Override
+  public String toModelFilename(String name) {
+    String _modelNamePrefix = "model__";
+    return capitalize(_modelNamePrefix) + capitalize(name);
+  }
+
+  @Override
+  public String toApiFilename(String name) {
+    String _apiNamePrefix = "api__";
+    return capitalize(_apiNamePrefix) + capitalize(name);
+  }
+
 }
